@@ -131,7 +131,7 @@ def improve():
                 max2 = k
 
             if fit[k] < fit[worst1]:
-                worst2 = max1
+                worst2 = worst1
                 worst1 = k
 
             if fit[worst2] > fit[k] > fit[worst1]:
