@@ -1,5 +1,8 @@
 import random
 
+MUTATE_RATE = 50
+CHANCE_CROSS = 80
+
 
 class Cromossomo:
     def __init__(self, a1, a2, a3):
@@ -18,13 +21,22 @@ def fill(mycromo, maxsize):
     return mycromo
 
 
+def evaluate_pop():
+    same = 0
+    for i in range(10):
+        for j in range(10):
+            if pop[i].a1 == pop[j].a1 and pop[i].a2 == pop[j].a2 and pop[i].a3 == pop[j].a3:
+                same += 1
+    return same
+
+
 def mutate(mycromo):
     cromocopy = Cromossomo(mycromo.a1.copy(), mycromo.a2.copy(), mycromo.a3.copy())
     if cromocopy.a1.count('0') > 0:
         i = len(cromocopy.a1) - 1
         while i > 0:
             if cromocopy.a1[i] == '0':
-                if random.randint(0, 100) > 50:
+                if random.randint(0, 100) > MUTATE_RATE:
                     cromocopy.a1.pop(i)
                     cromocopy.a1.insert(random.randint(0, len(cromocopy.a1)), '0')
 
@@ -34,7 +46,7 @@ def mutate(mycromo):
         i = len(cromocopy.a2) - 1
         while i > 0:
             if cromocopy.a2[i] == '0':
-                if random.randint(0, 100) > 50:
+                if random.randint(0, 100) > MUTATE_RATE:
                     cromocopy.a2.pop(i)
                     cromocopy.a2.insert(random.randint(0, len(cromocopy.a2)), '0')
 
@@ -43,7 +55,7 @@ def mutate(mycromo):
         i = len(cromocopy.a3) - 1
         while i > 0:
             if cromocopy.a3[i] == '0':
-                if random.randint(0, 100) > 50:
+                if random.randint(0, 100) > MUTATE_RATE:
                     cromocopy.a3.pop(i)
                     cromocopy.a3.insert(random.randint(0, len(cromocopy.a3)), '0')
 
@@ -121,7 +133,6 @@ def improve():
 
         for k in range(10):
             if fit[k] > fit[max1]:
-                print(fit[k])
                 max2 = max1
                 max1 = k
                 if fit[k] == 10:
@@ -136,11 +147,24 @@ def improve():
 
             if fit[worst2] > fit[k] > fit[worst1]:
                 worst2 = k
+        samecromo = evaluate_pop()
+        global MUTATE_RATE
+        global CHANCE_CROSS
+        if samecromo > 30:
+            if MUTATE_RATE <= 90:
+                MUTATE_RATE = MUTATE_RATE + 10
+            if CHANCE_CROSS >= 10:
+                CHANCE_CROSS -= 10
+        if samecromo < 15:
+            if MUTATE_RATE >= 10:
+                MUTATE_RATE = MUTATE_RATE - 10
+            if CHANCE_CROSS <= 90:
+                CHANCE_CROSS += 10
 
         mutate1 = mutate(pop[max1])
-
-        cross1 = cross(pop[max1], pop[max2])
-        pop[worst2] = cross1
+        if CHANCE_CROSS > random.randint(0, 100):
+            cross1 = cross(pop[max1], pop[max2])
+            pop[worst2] = cross1
         pop[worst1] = mutate1
 
     print(pop[max1].a1)
