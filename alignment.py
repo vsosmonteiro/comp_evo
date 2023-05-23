@@ -85,7 +85,7 @@ def fitness(mycromo):
             if mycromo.a1[i] == mycromo.a2[i]:
                 valor += 1
             else:
-                if mycromo.a2 != '0':
+                if mycromo.a2[i] != '0':
                     valor -= 1
 
             if mycromo.a1[i] == mycromo.a3[i]:
