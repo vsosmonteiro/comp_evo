@@ -35,7 +35,7 @@ def mutate(mycromo):
         i = len(cromocopy.a1) - 1
         while i > 0:
             if cromocopy.a1[i] == '0':
-                if random.randint(0, 100) > 100 - MUTATE_CHANCE:
+                if random.randint(0, 100) > (100 - MUTATE_CHANCE):
                     cromocopy.a1.pop(i)
                     cromocopy.a1.insert(random.randint(0, len(cromocopy.a1)), '0')
 
@@ -45,7 +45,7 @@ def mutate(mycromo):
         i = len(cromocopy.a2) - 1
         while i > 0:
             if cromocopy.a2[i] == '0':
-                if random.randint(0, 100) > 100 - MUTATE_CHANCE:
+                if random.randint(0, 100) > (100 - MUTATE_CHANCE):
                     cromocopy.a2.pop(i)
                     cromocopy.a2.insert(random.randint(0, len(cromocopy.a2)), '0')
 
@@ -54,7 +54,7 @@ def mutate(mycromo):
         i = len(cromocopy.a3) - 1
         while i > 0:
             if cromocopy.a3[i] == '0':
-                if random.randint(0, 100) > 100 - MUTATE_CHANCE:
+                if random.randint(0, 100) > (100 - MUTATE_CHANCE):
                     cromocopy.a3.pop(i)
                     cromocopy.a3.insert(random.randint(0, len(cromocopy.a3)), '0')
 
@@ -70,22 +70,10 @@ def create_pop(entrada, maxsize):
 
 
 def cross(mycromo1, mycromo2):
-    array1 = []
-    array2 = []
-    array3 = []
-    for i in range(3):
-        if random.randint(0, 100) > 50:
-            array1 = mycromo1.a1
-        else:
-            array1 = mycromo2.a1
-        if random.randint(0, 100) > 50:
-            array2 = mycromo1.a2
-        else:
-            array2 = mycromo2.a2
-        if random.randint(0, 100) > 50:
-            array3 = mycromo1.a3
-        else:
-            array3 = mycromo2.a3
+    array1 = mycromo1.a1 if random.randint(0, 100) > 50 else mycromo2.a1
+    array2 = mycromo1.a2 if random.randint(0, 100) > 50 else mycromo2.a2
+    array3 = mycromo1.a3 if random.randint(0, 100) > 50 else mycromo2.a3
+
     return Cromossomo(array1, array2, array3)
 
 
@@ -96,7 +84,7 @@ def fitness(mycromo):
             if mycromo.a1[i] == mycromo.a2[i]:
                 valor += 1
             else:
-                if mycromo.a2 != '0':
+                if mycromo.a2[i] != '0':
                     valor -= 1
 
             if mycromo.a1[i] == mycromo.a3[i]:
@@ -126,7 +114,7 @@ def improve():
     max2 = 0
     worst1 = 0
     worst2 = 0
-    for i in range(100000):
+    for i in range(10000):
         for j in range(10):
             fit[j] = fitness(pop[j])
 
@@ -134,8 +122,6 @@ def improve():
             if fit[k] > fit[max1]:
                 max2 = max1
                 max1 = k
-                if fit[k] == 10:
-                    flag = True
 
             if fit[max2] < fit[k] < fit[max1]:
                 max2 = k
@@ -183,4 +169,3 @@ if __name__ == '__main__':
     pop = create_pop(entradas, maxsize)
 
     improve()
-
