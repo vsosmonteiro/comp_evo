@@ -1,6 +1,6 @@
 import random
 
-MUTATE_RATE = 50
+MUTATE_CHANCE = 50
 CHANCE_CROSS = 80
 
 
@@ -29,14 +29,13 @@ def evaluate_pop():
                 same += 1
     return same
 
-
 def mutate(mycromo):
     cromocopy = Cromossomo(mycromo.a1.copy(), mycromo.a2.copy(), mycromo.a3.copy())
     if cromocopy.a1.count('0') > 0:
         i = len(cromocopy.a1) - 1
         while i > 0:
             if cromocopy.a1[i] == '0':
-                if random.randint(0, 100) > MUTATE_RATE:
+                if random.randint(0, 100) > 100 - MUTATE_CHANCE:
                     cromocopy.a1.pop(i)
                     cromocopy.a1.insert(random.randint(0, len(cromocopy.a1)), '0')
 
@@ -46,7 +45,7 @@ def mutate(mycromo):
         i = len(cromocopy.a2) - 1
         while i > 0:
             if cromocopy.a2[i] == '0':
-                if random.randint(0, 100) > MUTATE_RATE:
+                if random.randint(0, 100) > 100 - MUTATE_CHANCE:
                     cromocopy.a2.pop(i)
                     cromocopy.a2.insert(random.randint(0, len(cromocopy.a2)), '0')
 
@@ -55,7 +54,7 @@ def mutate(mycromo):
         i = len(cromocopy.a3) - 1
         while i > 0:
             if cromocopy.a3[i] == '0':
-                if random.randint(0, 100) > MUTATE_RATE:
+                if random.randint(0, 100) > 100 - MUTATE_CHANCE:
                     cromocopy.a3.pop(i)
                     cromocopy.a3.insert(random.randint(0, len(cromocopy.a3)), '0')
 
@@ -148,16 +147,16 @@ def improve():
             if fit[worst2] > fit[k] > fit[worst1]:
                 worst2 = k
         samecromo = evaluate_pop()
-        global MUTATE_RATE
+        global MUTATE_CHANCE
         global CHANCE_CROSS
         if samecromo > 30:
-            if MUTATE_RATE <= 90:
-                MUTATE_RATE = MUTATE_RATE + 10
+            if MUTATE_CHANCE <= 90:
+                MUTATE_CHANCE = MUTATE_CHANCE + 10
             if CHANCE_CROSS >= 10:
                 CHANCE_CROSS -= 10
         if samecromo < 15:
-            if MUTATE_RATE >= 10:
-                MUTATE_RATE = MUTATE_RATE - 10
+            if MUTATE_CHANCE >= 10:
+                MUTATE_CHANCE = MUTATE_CHANCE - 10
             if CHANCE_CROSS <= 90:
                 CHANCE_CROSS += 10
 
@@ -185,4 +184,3 @@ if __name__ == '__main__':
 
     improve()
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
