@@ -1,5 +1,8 @@
 import random
 
+MUTATE_RATE = 5
+MUTATE_CHANCE = 50
+
 
 class Mycromo:
     def __init__(self, matrix):
@@ -30,13 +33,33 @@ def randomline():
     return newlist
 
 
+def randomMutate(num):
+    start = 0
+    end = 7
+    if num - MUTATE_RATE < 0:
+        start = 0
+    else:
+        start = (num - MUTATE_RATE)
+
+    if num + MUTATE_RATE >= 7:
+        end = 7
+    else:
+        end = num + MUTATE_RATE
+    print(num,start,end)
+    newlist = [0, 0, 0, 0, 0, 0, 0, 0]
+    newlist[random.randint(start, end)] = 1
+    return newlist
+
+
 def mutate(mycromo):
     for i in range(8):
+        mutatenum = 0
         for j in range(8):
-            if random.randint(0, 100) > 50:
-                mycromo.matrix[i] = randomline()
+            if mycromo.matrix[i][j] == 1:
+                mutatenum = j
+            if random.randint(0, 100) > MUTATE_CHANCE:
+                mycromo.matrix[i] = randomMutate(mutatenum)
     return mycromo
-
 
 def printpop():
     for i in range(10):
