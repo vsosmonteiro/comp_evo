@@ -9,6 +9,28 @@ class Mycromo:
         self.matrix = matrix
 
 
+def evaluatepop():
+    mymax = 0
+    same = 0
+    for i in range(10):
+        for j in range(10):
+            if fitness(pop[i]) == fitness(pop[j]):
+                same += 1
+            if same > mymax:
+                mymax = same
+            same = 0
+        global MUTATE_CHANCE
+    if mymax < 2:
+        print('a')
+        if MUTATE_CHANCE <= 60:
+            MUTATE_CHANCE += 10
+    if mymax > 4:
+        print('b')
+        if MUTATE_CHANCE >= 20:
+            MUTATE_CHANCE -= 10
+    print(MUTATE_CHANCE)
+
+
 def createpop():
     for i in range(10):
         newCromo = Mycromo(matrix=[])
@@ -45,7 +67,6 @@ def randomMutate(num):
         end = 7
     else:
         end = num + MUTATE_RATE
-    print(num,start,end)
     newlist = [0, 0, 0, 0, 0, 0, 0, 0]
     newlist[random.randint(start, end)] = 1
     return newlist
@@ -60,6 +81,7 @@ def mutate(mycromo):
             if random.randint(0, 100) > MUTATE_CHANCE:
                 mycromo.matrix[i] = randomMutate(mutatenum)
     return mycromo
+
 
 def printpop():
     for i in range(10):
@@ -139,7 +161,9 @@ def improve():
     max2 = 0
     worst1 = 0
     worst2 = 0
+    count = 0
     while fit.count(0) == 0:
+        count += 1
         for i in range(10):
             fit[i] = fitness(pop[i])
         if fit.count(0):
@@ -164,6 +188,9 @@ def improve():
 
         pop[worst2] = cross1
         pop[worst1] = mutate1
+        if count % 100 == 0:
+            evaluatepop()
+            print(fit[max1])
 
     printcromo(pop[max1])
 
