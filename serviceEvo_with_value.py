@@ -2,6 +2,7 @@ import random
 import numpy as np
 
 MUTATE_RATE = 0.2
+MUTATE_MINIMUM = 2
 
 
 class Cromossomo:
@@ -23,6 +24,19 @@ def fitness(cromo):
     sum_voice = 1 - ((cromo.voice_wcdma + cromo.voice_gsm) / 275)
     sum_data = 1 - ((cromo.data_gsm + cromo.data_wcdma) / 110)
     return (cost_gsm + cost_wcdma) * sum_data * sum_voice
+
+
+def checkDiffs(mypop):
+    same = 0
+    mymax = 0
+    for i in range(10):
+        for k in range(10):
+            if fitness(mypop[i]) == fitness(mypop[k]):
+                same += 1
+        if same > mymax:
+            mymax = same
+        same = 0
+    return mymax
 
 
 def mutateCromo(cromo):
@@ -62,21 +76,19 @@ def improve(pop):
 
             if fit[worst2] < fit[k] < fit[worst1]:
                 worst2 = k
-
-        mutate1 = mutateCromo(pop[max1])
+        if checkDiffs(pop) >= MUTATE_MINIMUM:
+            mutate1 = mutateCromo(pop[max1])
+            pop[worst1] = mutate1
 
         cross1 = cross(pop[max1], pop[max2])
         pop[worst2] = cross1
-        pop[worst1] = mutate1
 
-    print(pop[max1].voice_gsm)
-    print(pop[max1].voice_wcdma)
-    print(pop[max1].data_gsm)
-    print(pop[max1].data_wcdma)
-    print(fit[max1])
-    print(max1)
-    for i in range(10):
-        print(fit[i])
+    print('voice_gsm = ', pop[max1].voice_gsm)
+    print('voice_wcdma = ', pop[max1].voice_wcdma)
+    print('data_gsm = ', pop[max1].data_gsm)
+    print('data_wcdma = ', pop[max1].data_wcdma)
+    print('fitness = ', fit[max1])
+
     return pop
 
 
